@@ -19,7 +19,7 @@ venv:: .check_python_version ${VENV_ACTIVATE}
 
 clean:: .transforms_workflows.clean
 
-build:: .check_python_version ${VENV_ACTIVATE}
+build:: 
 	$(MAKE) ${YAML_FILE}
 
 test:: .check_python_version ${VENV_ACTIVATE}

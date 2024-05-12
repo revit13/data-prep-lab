@@ -49,6 +49,7 @@ ${VENV_ACTIVATE}: ${REPOROOT}/.make.versions ${REPOROOT}/kfp/requirements.env ${
 	$(PYTHON) -m venv ${REPOROOT}/kfp/transform_workflows/venv
 	. ${VENV_ACTIVATE};     \
 	pip install kfp==${KFP} --extra-index-url https://pypi.org/simple; \
+	pip install kfp-kubernetes --extra-index-url https://pypi.org/simple; \
 	pip install data_prep_toolkit_kfp==${DPK_LIB_KFP_VERSION}
 	
 .PHONY: .transforms_workflows.upload-pipeline
