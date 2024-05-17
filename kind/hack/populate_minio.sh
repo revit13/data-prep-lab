@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 if [ "$MINIO_SERVER" == "" ]; then
     MINIO_SERVER="http://localhost:8080"
