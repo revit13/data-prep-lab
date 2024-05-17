@@ -70,6 +70,7 @@ jobs:
               uses: actions/checkout@v4
             - name: Test KFP worflow run
               run: |
+                  df -h
                   source kind/requirements.env
                   export PATH=$PATH:/tmp/
                   curl -Lo /tmp/kind https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64
@@ -83,6 +84,7 @@ jobs:
                   curl https://dl.min.io/client/mc/release/linux-amd64/mc --create-dirs -o /tmp/mc
                   chmod +x /tmp/mc
                   make -C kind setup
+                  df -h
                   make -C kfp/transform_workflows venv build
                   make -C kfp/transform_workflows/universal/noop upload
                   make -C kfp/transform_workflows/universal/noop test
