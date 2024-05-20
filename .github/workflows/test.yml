@@ -67,7 +67,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Check space
-              run: df -h
+              run:  df -h
             - name: Free Disk Space (Ubuntu)
               uses: jlumbroso/free-disk-space@main
               with:
@@ -83,7 +83,7 @@ jobs:
                 large-packages: true
                 swap-storage: true
             - name: Check space
-              run: df -h
+              run:  df -h
             - name: Checkout
               uses: actions/checkout@v4
             - name: Test KFP worflow run
