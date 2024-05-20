@@ -94,5 +94,6 @@ jobs:
                   make -C kind setup
                   make -C kfp/transform_workflows venv build
                   make -C kfp/transform_workflows/universal/noop upload
+                  df -h
                   make -C kfp/transform_workflows/universal/noop test
 
