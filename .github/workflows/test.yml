@@ -68,15 +68,13 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-            - name: Free space
+            - name: Free up space in github runner
               run: |
                   df -h
-                  sudo rm -rf /usr/share/dotnet
-                  sudo rm -rf /opt/ghc
                   sudo rm -rf "/usr/local/share/boost"
                   sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-                  sudo rm -rf /usr/share/dotnet
-                  sudo rm -rf /opt/ghc
+                  sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/powershell /usr/share/swift /usr/lib/jvm /usr/local/.ghcup
+                  sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
                   df -h
             - name: Test KFP worflow run
               timeout-minutes: 120
