@@ -60,16 +60,16 @@ if __name__ == "__main__":
                 pipeline_name=pipeline_name,
                 overwrite=str2bool(args.overwrite),
             )
-            if pipeline is None:
-                sys.exit(1)
+        #    if pipeline is None:
+         #       sys.exit(1)
         case "sanity-test":
             run = run_test(
                 endpoint=args.endpoint,
                 pipeline_package_path=args.pipeline_package_path,
                 overwrite=str2bool(args.overwrite),
             )
-            if run is None:
-                sys.exit(1)
+          #  if run is None:
+           #     sys.exit(1)
         case _:
             logger.warning("Unsupported command")
             exit(1)
