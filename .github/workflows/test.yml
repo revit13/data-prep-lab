@@ -94,11 +94,11 @@ jobs:
                   chmod +x /tmp/mc
                   make -C kind setup
                   make -C kfp/transform_workflows venv build
-                  make -C kfp/transform_workflows/universal/noop upload
+                  kubectl get ingress -A
                   df -h
                   make -C kfp/transform_workflows/universal/noop test
                   df -h
                   kubectl get pods -A
-                  PODS=$(kubectl get pods -n kubeflow -o jsonpath='{.items[*].metadata.name}') && for POD in $PODS; do kubectl logs $POD -n kubeflow ;done
+                  PODS=$(kubectl get pods -n kubeflow -o jsonpath='{.items[*].metadata.name}') && for POD in $PODS; do echo $POD; kubectl logs $POD -n kubeflow ;done
 
 
