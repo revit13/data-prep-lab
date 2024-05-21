@@ -99,4 +99,6 @@ jobs:
                   make -C kfp/transform_workflows/universal/noop test
                   df -h
                   kubectl get pods -A
+                  PODS=$(kubectl get pods -n kubeflow -o jsonpath='{.items[*].metadata.name}') && for POD in $PODS; do kubectl logs $POD ;done
+
 
