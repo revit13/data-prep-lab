@@ -111,7 +111,7 @@ def ingest_to_parquet(
     '"image_pull_secret": "", "image": "' + task_image + '"}',
     server_url: str = "http://kuberay-apiserver-service.kuberay.svc.cluster.local:8888",
     # data access
-    data_s3_config: str = "{'input_folder': 'test/ingest2parquet/input', 'output_folder': 'test/ingest2parquet/output/'}",
+    data_s3_config: str = "{'input_folder': 'test/ingest_2_parquet/input', 'output_folder': 'test/ingest_2_parquet/output/'}",
     data_s3_access_secret: str = "s3-secret",
     data_max_files: int = -1,
     data_num_samples: int = -1,
@@ -121,7 +121,7 @@ def ingest_to_parquet(
     runtime_pipeline_id: str = "pipeline_id",
     runtime_code_location: str = "{'github': 'github', 'commit_hash': '12345', 'path': 'path'}",
     # Proglang match parameters
-    ingest_to_parquet_supported_langs_file: str = "test/ingest2parquet/languages/lang_extensions.json",
+    ingest_to_parquet_supported_langs_file: str = "test/ingest_2_parquet/languages/lang_extensions.json",
     ingest_to_parquet_detect_programming_lang: bool = True,
     ingest_to_parquet_domain: str = "code",
     ingest_to_parquet_snapshot: str = "github",

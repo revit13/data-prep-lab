@@ -12,7 +12,7 @@ mc mb kfp/test
 echo "copying data"
 # code modules
 mc cp --recursive ${ROOT_DIR}/../transforms/code/code_quality/ray/test-data/input/ kfp/test/code_quality/input
-mc cp --recursive ${ROOT_DIR}/../transforms/code/ingest_2_parquet/ray/test-data/input/ kfp/test/ingest_2_parquet/input
+mc cp --recursive ${ROOT_DIR}/../transforms/code/ingest_2_parquet/ray/test-data/input/data-processing-lib.zip kfp/test/ingest_2_parquet/input
 mc cp --recursive ${ROOT_DIR}/../transforms/code/ingest_2_parquet/ray/test-data/languages/ kfp/test/ingest_2_parquet/languages
 mc cp --recursive ${ROOT_DIR}/../transforms/code/proglang_select/ray/test-data/input/ kfp/test/proglang_select/input
 mc cp --recursive ${ROOT_DIR}/../transforms/code/proglang_select/ray/test-data/languages/ kfp/test/proglang_select/languages
