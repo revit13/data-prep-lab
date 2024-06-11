@@ -42,7 +42,7 @@ class PipelinesUtils:
         description: str = None,
     ) -> kfp_server_api.V2beta1Pipeline:
         """
-        Uploads the pipeline. If the pipeline exists then a new version is created
+        Uploads the pipeline. If the pipeline exists then a new version is uploaded
         :param pipeline_package_path: Local path to the pipeline package.
         :param pipeline_name: Optional. Name of the pipeline to be shown in the UI
         :param description: Optional. Description of the pipeline to be shown in the UI.
@@ -92,11 +92,13 @@ class PipelinesUtils:
         job_name = pipeline.display_name + " " + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         if pipeline_version_id is None:
             try:
-                logger.info(f"Running latest pipeline version")
-                versions = self.kfp_client.list_pipeline_versions(pipeline_id=pipeline.pipeline_id)
-                pipeline_version_id = versions.pipeline_versions[
-                    len(versions.pipeline_versions) - 1
-                ].pipeline_version_id
+                logger.info(f"pipeline_version_id was not provided. Running latest pipeline version")
+                versions = self.kfp_client.list_pipeline_versions(
+                    pipeline_id=pipeline.pipeline_id, sort_by="created_at desc"
+                )
+                latest_version = versions.pipeline_versions[0]
+                logger.info(f"running version name {latest_version.display_name}")
+                pipeline_version_id = latest_version.pipeline_version_id
             except Exception as e:
                 logger.warning(f"Exception list pipelines {e}")
                 return None
