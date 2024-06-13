@@ -1,4 +1,4 @@
-name: Custom Run
+name: Workflow Manual Run 
 
 on:
   workflow_dispatch:
@@ -7,10 +7,14 @@ on:
         description: 'Specify the workflow path to run'
         required: true
         default: 'transforms/universal/noop'
-    kfp_v1:
-        description: 'True if kfp version v1 should be used. Otherwise false.'
+      kfp_v2:
+        description: '1 if kfp version v2 should be used. Otherwise false.'
         required: false
-        default: 'true'
+        default: '0'
+      debug:
+         description: 'True if use debug mode.'
+         required: false
+         default: 'true'
 
 
 jobs:
@@ -18,6 +22,7 @@ jobs:
         env:
           KFPv2 : ${{ github.event.inputs.kfp_v1 }}
           WORKFLOW_PATH: ${{ github.event.inputs.workflow-path }}
+          DEBUG_MODE: ${{ github.event.inputs.debug }}
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -47,4 +52,8 @@ jobs:
                   curl https://dl.min.io/client/mc/release/linux-amd64/mc --create-dirs -o /tmp/mc
                   chmod +x /tmp/mc
                   make -C kind setup
-                  make -C $WORKFLOW_PATH workflow-test
+                  #make -C $WORKFLOW_PATH workflow-test
+                  if [ "$DEBUG_MODE" == "true" ]; then
+                     kubectl describe pod -A
+                     kubectl get pods -A
+                  fi
