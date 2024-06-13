@@ -52,7 +52,7 @@ jobs:
                   curl https://dl.min.io/client/mc/release/linux-amd64/mc --create-dirs -o /tmp/mc
                   chmod +x /tmp/mc
                   make -C kind setup
-                  #make -C $WORKFLOW_PATH workflow-test
+                  make -C $WORKFLOW_PATH workflow-test
                   if [ "$DEBUG_MODE" == "true" ]; then
                      kubectl describe pod -A
                      kubectl get pods -A
