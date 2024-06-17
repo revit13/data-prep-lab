@@ -67,11 +67,11 @@ jobs:
                   source kind/requirements.env
                   export PATH=$PATH:/tmp/
                   curl -Lo /tmp/kind https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64
+                  chmod 777 /tmp/kind
                   curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
                   chmod 700 /tmp/get_helm.sh
                   HELM_INSTALL_DIR=/tmp/ /tmp/get_helm.sh -v v${HELM_VERSION} --no-sudo
                   chmod 777 /tmp/helm
-                  chmod 777 /tmp/kind
                   curl -L https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /tmp/kubectl
                   chmod 777 /tmp/kubectl
                   curl https://dl.min.io/client/mc/release/linux-amd64/mc --create-dirs -o /tmp/mc
@@ -99,11 +99,11 @@ jobs:
                   source kind/requirements.env
                   export PATH=$PATH:/tmp/
                   curl -Lo /tmp/kind https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64
+                  chmod 777 /tmp/kind
                   curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
                   chmod 700 /tmp/get_helm.sh
                   HELM_INSTALL_DIR=/tmp/ /tmp/get_helm.sh -v v${HELM_VERSION} --no-sudo
                   chmod 777 /tmp/helm
-                  chmod 777 /tmp/kind
                   curl -L https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl -o /tmp/kubectl
                   chmod 777 /tmp/kubectl
                   curl https://dl.min.io/client/mc/release/linux-amd64/mc --create-dirs -o /tmp/mc
