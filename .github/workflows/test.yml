@@ -115,4 +115,6 @@ jobs:
                   dir=("code"  "universal") && index=$(($RANDOM % 2)) && subdirs=${dir[$index]} && transforms=($(find transforms/$subdirs/ -type d  -maxdepth 1 ))
                   # First element is not really a subdir but rather the current dir so remove it and randomly choose a transform to run
                   set -- "${transforms[@]}" && shift && transforms=("$@") && size=${#transforms[@]} && index=$(($RANDOM % $size))
+                  source kind/hack/common.sh
+                  header_text "Running ${transforms[$index]} workflow test"
                   make -C ${transforms[$index]} workflow-test
