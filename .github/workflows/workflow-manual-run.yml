@@ -14,7 +14,7 @@ on:
       debug:
          description: 'True if use debug mode.'
          required: false
-         default: 'true'
+         default: 'false'
 
 
 jobs:
@@ -53,7 +53,8 @@ jobs:
                   chmod +x /tmp/mc
                   make -C kind setup
                   make -C $WORKFLOW_PATH workflow-test
-                  if [ "$DEBUG_MODE" == "true" ]; then
+                  debug_mode=$(echo "$DEBUG_MODE" | tr '[:upper:]' '[:lower:]')
+                  if [ "$debug_mode" == "true" ]; then
                      kubectl describe pod -A
                      kubectl get pods -A
                   fi
