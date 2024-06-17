@@ -119,3 +119,4 @@ jobs:
                   source kind/hack/common.sh
                   header_text "Running ${transforms[$index]} workflow test"
                   make -C ${transforms[$index]} workflow-test
+                  header_text "Run ${transforms[$index]} completed"
