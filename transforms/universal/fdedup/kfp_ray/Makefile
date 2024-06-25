@@ -18,8 +18,6 @@ venv::
 
 build::
 
-test::
-
 test-src::
 
 publish::
