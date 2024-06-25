@@ -21,6 +21,12 @@ set-versions:
 		${REPOROOT}/scripts/transforms/update_workflow_tags.sh ${REPOROOT}/.make.versions ${CURDIR}/$$file; \
 	done
 
+.PHONY: test
+test:
+	@for file in $(PYTHON_WF); do \
+		${REPOROOT}/scripts/transforms/update_workflow_tags.sh check_tags ${REPOROOT}/.make.versions ${CURDIR}/$$file; \
+	done
+
 .PHONY: .workflows.compile-pipeline
 .workflows.compile-pipeline:
 	. ${WORKFLOW_VENV_ACTIVATE} && ${PYTHON} ${WF_NAME}.py
