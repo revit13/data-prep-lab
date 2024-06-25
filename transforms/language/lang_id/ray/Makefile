@@ -34,7 +34,7 @@ setup:: .transforms.setup
 
 # set the version of python transform that this depends on.
 set-versions: 
-	$(MAKE) TRANSFORM_PYTHON_VERSION=${LANG_ID_PYTHON_VERSION} TOML_VERSION=$(LANG_ID_RAY_VERSION) .transforms.set-versions
+	$(MAKE) TOML_VERSION=$(DOCKER_IMAGE_VERSION) .defaults.update-toml
         
 build-dist:: set-versions .defaults.build-dist 
 
