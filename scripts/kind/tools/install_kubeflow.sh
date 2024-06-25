@@ -16,6 +16,7 @@ deploy() {
 	git clone https://github.com/kubeflow/pipelines.git --branch ${PIPELINE_VERSION} --single-branch
 	cd pipelines
 	kubectl apply -k manifests/kustomize/cluster-scoped-resources
+	kubectl wait crd/applications.app.k8s.io --for condition=established --timeout=60s || EXIT_CODE=$?
 	kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io
 	# Disable the public endpoint
 	# ref: https://www.kubeflow.org/docs/components/pipelines/v1/installation/standalone-deployment/#disable-the-public-endpoint
