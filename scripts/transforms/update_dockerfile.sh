@@ -2,7 +2,8 @@
 
 # update ray version in dockerfile.
 
-set -euo pipefail
+op=$1
+shift
 
 if [[ $# != 1 ]]; then
   cat <<EOF
@@ -12,6 +13,7 @@ EOF
 fi
 
 ray=$1
+source ../common.sh
 
 update_dockerfile() {
   first_line=$(head -n 1 Dockerfile)
@@ -50,11 +52,11 @@ EOF
 case "$op" in
 check_dockerfile)
   header_text "Check dokcerfile in workflow"
-  check_dokcerfile $1 $2
+  check_dokcerfile $1
   ;;
 update_dockerfile)
   header_text "Update dokcerfile in workflow"
-  update_dockerfile $1 $2
+  update_dockerfile $1
   ;;
 *)
   usage

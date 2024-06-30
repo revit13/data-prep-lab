@@ -46,9 +46,29 @@ set-versions:
 	@$(MAKE) .reconcile-requirements FILE=deleteRayClusterComponent.yaml
 	@$(MAKE) .reconcile-requirements FILE=executeRayJobComponent.yaml
 	@$(MAKE) .reconcile-requirements FILE=executeRayJobComponent_multi_s3.yaml
-	@$(REPOROOT)/scripts/transforms/update_dockerfile.sh ${RAY}
+	@cd $(REPOROOT)/scripts/transforms/ && update_dockerfile.sh update_dockerfile ${RAY}
 ifneq ($(KFPv2), 1)
 	@$(MAKE) .reconcile-requirements FILE=executeSubWorkflowComponent.yaml
+endif
+
+.PHONY: .check_tag
+.check_tag:
+	@image=$$(cat ${FILE} | grep -Eo $(DOCKER_IMAGE_NAME):${DOCKER_IMAGE_VERSION});     \
+	if [ -z $$image ]; then 														    \
+		echo "Unexpected tag in ${FILE}";												\
+		exit 1;																			\
+	fi
+
+.PHONY: test
+test:
+	@# Help: Check that $(KFP_DOCKER_VERSION) tag version in $(KFP_DOCKER_VERSION) yaml files are as expected
+	@$(MAKE) .check_tag FILE=createRayClusterComponent.yaml
+	@$(MAKE) .check_tag  FILE=deleteRayClusterComponent.yaml
+	@$(MAKE) .check_tag  FILE=executeRayJobComponent.yaml
+	@$(MAKE) .check_tag  FILE=executeRayJobComponent_multi_s3.yaml
+	@cd $(REPOROOT)/scripts/transforms/ && ./update_dockerfile.sh check_dockerfile ${RAY}
+ifneq ($(KFPv2), 1)
+	@$(MAKE) .check_tag FILE=executeSubWorkflowComponent.yaml
 endif
 
 .PHONY: load-image
@@ -62,8 +82,6 @@ build: image
 .PHONY: publish
 publish:
 	$(MAKE) image .defaults.publish-image
-
-test::
 
 .PHONY: clean
 clean:
