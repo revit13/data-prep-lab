@@ -189,7 +189,8 @@ __check_defined = \
 		--build-arg EXTRA_INDEX_URL=$(EXTRA_INDEX_URL)	\
 		--build-arg BASE_IMAGE=$(BASE_IMAGE)  		\
 		--build-arg BUILD_DATE=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')  	\
-		--build-arg GIT_COMMIT=$(shell git log -1 --format=%h)  . 
+		--build-arg GIT_COMMIT=$(shell git log -1 --format=%h) 		\
+		--progress plain .
 	$(DOCKER) tag $(DOCKER_LOCAL_IMAGE)  $(DOCKER_REMOTE_IMAGE)
 
 # Copy a source tree in LIB_PATH, including src, pyproject.toml to LIB_NAME
@@ -347,9 +348,9 @@ __check_defined = \
 # This is small convenience and the image itself must already be created.
 .PHONY: .defaults.test-image-pytest
 .defaults.test-image-pytest:: 
-	# Put this 2nd so its help showss up instead of .defaults.image help
+	# Put this 2nd so its help shows up instead of .defaults.image help
 	@# Help: Test $(DOCKER_LOCAL_IMAGE) using test source inside the image. 
-	$(DOCKER) run -t --rm $(DOCKER_LOCAL_IMAGE) pytest -s test 
+	$(DOCKER) build --target test --build-arg EXECUTE_TESTS=true . 
 	
 .PHONY: .defaults.test-locals
 .defaults.test-locals::
