@@ -1,9 +1,6 @@
-FROM docker.io/python:3.10.14-slim-bullseye
+FROM docker.io/python:3.10.14-slim-bullseye AS builder-stage
 
 RUN pip install --upgrade pip 
-
-# install pytest
-RUN pip install --no-cache-dir pytest
 
 # Create a user and use it to run the transform
 RUN useradd -ms /bin/bash dpk
@@ -34,19 +31,27 @@ RUN apt-get remove gcc g++ -y \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 USER dpk
 
-#COPY requirements.txt requirements.txt
-#RUN pip install --no-cache-dir -r  requirements.txt
+
+# Set environment
+ENV PYTHONPATH /home/dpk
+
+FROM builder-stage AS test
+ARG EXECUTE_TESTS
+
+# install pytest
+RUN pip install --no-cache-dir pytest
+
+# copy test
+COPY --chown=ray:users test/ test/
+COPY --chown=ray:users test-data/ test-data/
+RUN if [ "${EXECUTE_TESTS}" = "true" ]; then echo "===> RUNNING TESTS"; export PYTHONPATH=$PYTHONPATH:../src && cd test && pytest .; fi
+
+## final stage
+FROM builder-stage AS base
 
 # copy source data
 COPY ./src/lang_id_transform_python.py .
 COPY ./src/lang_id_local.py local/
-
-# copy test
-COPY test/ test/
-COPY test-data/ test-data/
-
-# Set environment
-ENV PYTHONPATH /home/dpk
 
 # Put these at the end since they seem to upset the docker cache.
 ARG BUILD_DATE

@@ -350,7 +350,7 @@ __check_defined = \
 .defaults.test-image-pytest:: 
 	# Put this 2nd so its help shows up instead of .defaults.image help
 	@# Help: Test $(DOCKER_LOCAL_IMAGE) using test source inside the image. 
-	$(DOCKER) build --target test --build-arg EXECUTE_TESTS=true . 
+	$(DOCKER) build --target test --build-arg EXECUTE_TESTS=true --progress plain . 
 	
 .PHONY: .defaults.test-locals
 .defaults.test-locals::
