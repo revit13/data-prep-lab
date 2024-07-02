@@ -79,6 +79,12 @@ jobs:
           - name: Save images
           # if: ${{ github.event_name != 'pull_request' }}
             run: make -C kfp/kfp_ray_components docker-save-image
+          - name: Upload images
+            # if: ${{ github.event_name != 'pull_request' }}
+            uses: actions/upload-artifact@v3
+            with:
+                name: images
+                path: artifacts/*
     build-tools:
         runs-on: ubuntu-latest
         timeout-minutes: 30
