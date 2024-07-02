@@ -19,7 +19,8 @@ jobs:
             - id: version
               run: |
                  publish_images='false'
-                 if  [[ ${GITHUB_REF} == refs/heads/dev &&  ${GITHUB_EVENT_NAME} != 'pull_request' ]] ;
+                 echo ${GITHUB_REPOSITORY}
+                 if  [[ ${GITHUB_REF} == refs/heads/dev &&  ${GITHUB_EVENT_NAME} != 'pull_request' && ${GITHUB_REPOSITORY} == 'IBM/data-prep-kit']] ;
                  then
                    publish_images='true'
                  fi
@@ -323,11 +324,11 @@ jobs:
     push-images:
         name: Push images with latest tag
         runs-on: ubuntu-22.04
+        if: needs.infer_version.outputs.publish_images == 'true'
         env:
            DOCKER_REGISTRY_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
            DOCKER_REGISTRY_KEY: ${{ secrets.DOCKER_REGISTRY_KEY }}
         needs: [infer_version, test-ray-lib, test-spark-lib, test-code, test-language, test-universal, test-tools, test-kfp-v1, test-kfp-v2, test-code-images, test-language-images, test-universal-images, build-kfp-components]
-        # if: ${{ github.event_name != 'pull_request' && github.repository == 'IBM/data-prep-kit' }}
         steps:
         - uses: actions/checkout@v3
         - name: Free up space in github runner
