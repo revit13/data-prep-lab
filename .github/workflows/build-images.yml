@@ -30,7 +30,9 @@ jobs:
                   make -C transforms/code DOCKER=docker test-image
             - name: Print space
                # Free space as indicated here : https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
-              run: df -h
+              run: |
+                   df -h
+                   docker images
             - name: Save images
               # if: ${{ github.event_name != 'pull_request' }}
               run: make -C transforms/code docker-save-image
@@ -93,7 +95,9 @@ jobs:
                   make -C transforms/universal DOCKER=docker test-image
             - name: Print space
                # Free space as indicated here : https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
-              run: df -h
+              run: |
+                   df -h
+                   docker images
             - name: Save images
                   # if: ${{ github.event_name != 'pull_request' }}
               run: make -C transforms/universal docker-save-image
