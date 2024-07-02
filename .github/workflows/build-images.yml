@@ -15,6 +15,15 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
+            - name: Free up space in github runner
+              # Free space as indicated here : https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+              run: |
+                  df -h
+                  sudo rm -rf "/usr/local/share/boost"
+                  sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+                  sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/powershell /usr/share/swift /usr/lib/jvm /usr/local/.ghcup
+                  sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
+                  df -h
             - name: Build and Test Code Transforms
               run: |
                   make -C data-processing-lib DOCKER=docker image 
@@ -26,7 +35,7 @@ jobs:
               # if: ${{ github.event_name != 'pull_request' }}
               uses: actions/upload-artifact@v3
               with:
-                name: images
+                name: images-code
                 path: artifacts/*
                 retention-days: 1
     build-language:
@@ -35,6 +44,15 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
+            - name: Free up space in github runner
+              # Free space as indicated here : https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+              run: |
+                  df -h
+                  sudo rm -rf "/usr/local/share/boost"
+                  sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+                  sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/powershell /usr/share/swift /usr/lib/jvm /usr/local/.ghcup
+                  sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
+                  df -h
             - name: Build and Test Language Transforms
               run: |
                   make -C data-processing-lib DOCKER=docker image
@@ -46,7 +64,7 @@ jobs:
               # if: ${{ github.event_name != 'pull_request' }}
               uses: actions/upload-artifact@v3
               with:
-                  name: images
+                  name: images-language
                   path: artifacts/*
     build-universal:
         runs-on: ubuntu-latest
@@ -54,6 +72,15 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
+            - name: Free up space in github runner
+              # Free space as indicated here : https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+              run: |
+                  df -h
+                  sudo rm -rf "/usr/local/share/boost"
+                  sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+                  sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/powershell /usr/share/swift /usr/lib/jvm /usr/local/.ghcup
+                  sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
+                  df -h
             - name: Build and Test Universal Transforms
               run: |
                   make -C data-processing-lib DOCKER=docker image 
@@ -65,7 +92,7 @@ jobs:
             # if: ${{ github.event_name != 'pull_request' }}
               uses: actions/upload-artifact@v3
               with:
-                  name: images
+                  name: images-universal
                   path: artifacts/*
     build-kfp-components:
       runs-on: ubuntu-latest
@@ -73,6 +100,15 @@ jobs:
       steps:
           - name: Checkout
             uses: actions/checkout@v4
+          - name: Free up space in github runner
+            # Free space as indicated here : https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+            run: |
+                df -h
+                sudo rm -rf "/usr/local/share/boost"
+                sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+                sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/powershell /usr/share/swift /usr/lib/jvm /usr/local/.ghcup
+                sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
+                df -h
           - name: Build 
             run: |
                make -C kfp/kfp_ray_components DOCKER=docker image
@@ -83,7 +119,7 @@ jobs:
             # if: ${{ github.event_name != 'pull_request' }}
             uses: actions/upload-artifact@v3
             with:
-                name: images
+                name: images-kfp
                 path: artifacts/*
     build-tools:
         runs-on: ubuntu-latest
@@ -104,12 +140,21 @@ jobs:
         # if: ${{ github.event_name != 'pull_request' && github.repository == 'IBM/data-prep-kit' }}
         steps:
         - uses: actions/checkout@v3
+        - name: Free up space in github runner
+            # Free space as indicated here : https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
+          run: |
+                df -h
+                sudo rm -rf "/usr/local/share/boost"
+                sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+                sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/powershell /usr/share/swift /usr/lib/jvm /usr/local/.ghcup
+                sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
+                df -h
         - name: Download artifact
           uses: actions/download-artifact@v3
           with:
             path: artifacts/*
-            name: images
-        - name: Load images
+            pattern: images-*
+        - name: Load code images
           run: |
                make -C transforms docker-load-image
                make -C kfp-kfp_ray_componenets docker-load-image
