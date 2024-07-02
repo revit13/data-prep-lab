@@ -184,6 +184,7 @@ __check_defined = \
 
 .PHONY: .defaults.docker-save-image
 .defaults.docker-save-image:
+	mkdir -p ${ARTIFACTS_DIR}/
 	docker save -o ${ARTIFACTS_DIR}/${DOCKER_IMAGE_NAME}.tar $(DOCKER_REMOTE_IMAGE)
 
 .PHONY: .defaults.docker-load-image
