@@ -43,6 +43,7 @@ jobs:
                 name: images-code
                 path: artifacts/*
                 retention-days: 1
+                compression-level: 0
     build-language:
         runs-on: ubuntu-latest
         timeout-minutes: 30
@@ -74,9 +75,10 @@ jobs:
               with:
                   name: images-language
                   path: artifacts/*
+                  compression-level: 0
     build-universal:
         runs-on: ubuntu-latest
-        timeout-minutes: 30
+        timeout-minutes: 120
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -84,6 +86,7 @@ jobs:
               # Free space as indicated here : https://github.com/actions/runner-images/issues/2840#issuecomment-790492173
               run: |
                   df -h
+                  sudo rm -rf /opt/ghc
                   sudo rm -rf "/usr/local/share/boost"
                   sudo rm -rf "$AGENT_TOOLSDIRECTORY"
                   sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/share/powershell /usr/share/swift /usr/lib/jvm /usr/local/.ghcup
@@ -107,6 +110,7 @@ jobs:
               with:
                   name: images-universal
                   path: artifacts/*
+                  compression-level: 0
     build-kfp-components:
       runs-on: ubuntu-latest
       timeout-minutes: 30
@@ -137,6 +141,7 @@ jobs:
             with:
                 name: images-kfp
                 path: artifacts/*
+                compression-level: 0
     build-tools:
         runs-on: ubuntu-latest
         timeout-minutes: 30
