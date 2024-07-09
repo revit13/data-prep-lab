@@ -517,6 +517,7 @@ MINIO_ADMIN_PWD= localminiosecretkey
 .PHONY: .defaults.update-toml
 .defaults.update-toml:
 	if [ -e pyproject.toml ]; then						\
+	    $(call check_defined, TOML_VERSION);				\
 	    $(MAKE) TOML_VERSION=$(TOML_VERSION) .defaults.__set-toml-version;	\
 	    $(MAKE) .defaults.__update-toml-lib-dep-versions;			\
 	fi
