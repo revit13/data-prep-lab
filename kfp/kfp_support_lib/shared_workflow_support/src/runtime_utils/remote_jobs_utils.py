@@ -401,6 +401,9 @@ class RayRemoteJobs:
         except Exception as e:
             logger.warning(f"failed to get output folder {e}")
             return
+        if output_folder is None:
+            logger.info("output_folder is not set")
+            return
         output_folder = output_folder if output_folder.endswith("/") else output_folder + "/"
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         execution_log_path = f"{output_folder}execution_{timestamp}.log"

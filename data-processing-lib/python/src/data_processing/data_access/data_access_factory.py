@@ -153,6 +153,7 @@ class DataAccessFactory(DataAccessFactoryBase):
             raise ValueError("args must be Namespace or dictionary")
         s3_cred = arg_dict.get(f"{self.cli_arg_prefix}s3_cred", None)
         s3_config = arg_dict.get(f"{self.cli_arg_prefix}s3_config", None)
+        lh_config = arg_dict.get(f"{self.cli_arg_prefix}lh_config", None)
         local_config = arg_dict.get(f"{self.cli_arg_prefix}local_config", None)
         checkpointing = arg_dict.get(f"{self.cli_arg_prefix}checkpointing", False)
         max_files = arg_dict.get(f"{self.cli_arg_prefix}max_files", -1)
@@ -163,6 +164,7 @@ class DataAccessFactory(DataAccessFactoryBase):
         # check which configuration (S3, LakeHouse, or Local) is specified
         s3_config_specified = 1 if s3_config is not None else 0
         local_config_specified = 1 if local_config is not None else 0
+        lh_config_specified = 1 if lh_config is not None else 0
 
         # check that only one (S3, LakeHouse, or Local) configuration is specified
         if s3_config_specified + local_config_specified > 1:
@@ -188,6 +190,9 @@ class DataAccessFactory(DataAccessFactoryBase):
                 f'input path - {self.s3_config["input_folder"]}, '
                 f'output path - {self.s3_config["output_folder"]}'
             )
+        elif lh_config_specified == 1:
+             self.logger.info(
+                f"data factory {self.cli_arg_prefix} is using LH data access")
         elif local_config_specified == 1:
             if not self._validate_local_config(local_config=local_config):
                 return False
