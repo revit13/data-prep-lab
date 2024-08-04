@@ -431,8 +431,7 @@ def _execute_remote_job(
     :param script: script to run (has to be present in the image)
     :param remote_jobs: remote jobs execution support class
     :return:
-    """
-
+    """       
     status, error, submission = remote_jobs.submit_job(name=name, namespace=ns, request=params, executor=script)
     if status != 200:
         logger.error(f"Failed to submit job - status: {status}, error: {error}")
@@ -443,6 +442,8 @@ def _execute_remote_job(
     data_factory = DataAccessFactory()
     data_factory.apply_input_params(args=data_access_params)
     data_access = data_factory.create_data_access()
+    if data_access is None:
+        print("data_access is None")
     # print execution log
     remote_jobs.follow_execution(
         name=name,

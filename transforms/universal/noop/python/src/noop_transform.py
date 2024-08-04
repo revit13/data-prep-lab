@@ -95,6 +95,11 @@ class NOOPTransformConfiguration(TransformConfiguration):
             default=1,
             help="Sleep actor for a number of seconds while processing the data frame, before writing the file to COS",
         )
+        parser.add_argument(
+            f"--{data_lh_config}",
+            type=str,
+            default="nothing",
+        )
         # An example of a command line option that we don't want included
         # in the metadata collected by the Ray orchestrator
         # See below for remove_from_metadata addition so that it is not reported.

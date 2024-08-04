@@ -17,13 +17,13 @@ import kfp.dsl as dsl
 from workflow_support.compile_utils import ONE_HOUR_SEC, ONE_WEEK_SEC, ComponentUtils
 
 
-task_image = "quay.io/dataprep1/data-prep-kit/noop-ray:latest"
+task_image = "quay.io/dataprep1/data-prep-kit/noop-ray:test1"
 
 # the name of the job script
 EXEC_SCRIPT_NAME: str = "noop_transform_ray.py"
 
 # components
-base_kfp_image = "quay.io/dataprep1/data-prep-kit/kfp-data-processing:latest"
+base_kfp_image = "quay.io/dataprep1/data-prep-kit/kfp-data-processing:test1"
 
 # path to kfp component specifications files
 component_spec_path = "../../../../kfp/kfp_ray_components/"
@@ -33,7 +33,7 @@ component_spec_path = "../../../../kfp/kfp_ray_components/"
 def compute_exec_params_func(
     worker_options: str,
     actor_options: str,
-    data_s3_config: str,
+    data_lh_config: str,
     data_max_files: int,
     data_num_samples: int,
     runtime_pipeline_id: str,
@@ -44,7 +44,7 @@ def compute_exec_params_func(
     from runtime_utils import KFPUtils
 
     return {
-        "data_s3_config": data_s3_config,
+        "data_lh_config": data_lh_config,
         "data_max_files": data_max_files,
         "data_num_samples": data_num_samples,
         "runtime_num_workers": KFPUtils.default_compute_execution_params(worker_options, actor_options),
@@ -99,12 +99,16 @@ def noop(
     ray_name: str = "noop-kfp-ray",  # name of Ray cluster
     # Add image_pull_secret and image_pull_policy to ray workers if needed
     ray_head_options: str = '{"cpu": 1, "memory": 4, "image": "' + task_image + '" }',
+    pp: dict = {"hello":"hi"},
     ray_worker_options: str = '{"replicas": 2, "max_replicas": 2, "min_replicas": 2, "cpu": 2, "memory": 4, '
     '"image": "' + task_image + '"}',
     server_url: str = "http://kuberay-apiserver-service.kuberay.svc.cluster.local:8888",
     # data access
-    data_s3_config: str = "{'input_folder': 'test/noop/input/', 'output_folder': 'test/noop/output/'}",
+    #data_s3_config: str = "{'input_folder': 'test/noop/input/', 'output_folder': 'test/noop/output/'}",
     data_s3_access_secret: str = "s3-secret",
+    data_lh_config: str = "{'lh_environment': 'STAGING', 'input_table': 'ibmdatapile.academic.ieee', 'input_dataset': '', \
+    'input_version': 'main', 'output_table': 'processed.ibmdatapile.academic.ieee.noop_kfp_lakehouse_0520_01', \
+    'output_path': 'lh-test/tables/processed/ibmdatapile/academic/ieee/noop_kfp_lakehouse_0520_01', 'token': 'LAKEHOUSE_TOKEN'}",
     data_max_files: int = -1,
     data_num_samples: int = -1,
     # orchestrator
@@ -159,7 +163,7 @@ def noop(
         compute_exec_params = compute_exec_params_op(
             worker_options=ray_worker_options,
             actor_options=runtime_actor_options,
-            data_s3_config=data_s3_config,
+            data_lh_config=data_lh_config,
             data_max_files=data_max_files,
             data_num_samples=data_num_samples,
             runtime_pipeline_id=runtime_pipeline_id,

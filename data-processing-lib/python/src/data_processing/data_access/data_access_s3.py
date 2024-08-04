@@ -18,10 +18,6 @@ import pyarrow
 from data_processing.data_access import ArrowS3, DataAccess
 from data_processing.utils import GB, MB, TransformUtils, get_logger
 
-
-logger = get_logger(__name__)
-
-
 class DataAccessS3(DataAccess):
     """
     Implementation of the Base Data access class for folder-based data access.
@@ -29,6 +25,7 @@ class DataAccessS3(DataAccess):
 
     def __init__(
         self,
+        logger,
         s3_credentials: dict[str, str],
         s3_config: dict[str, str] = None,
         d_sets: list[str] = None,
@@ -49,6 +46,7 @@ class DataAccessS3(DataAccess):
         :param files_to_use: files extensions of files to include
         :param files_to_checkpoint: files extensions of files to use for checkpointing
         """
+        self.logger = logger
         if (
             s3_credentials is None
             or s3_credentials.get("access_key", None) is None

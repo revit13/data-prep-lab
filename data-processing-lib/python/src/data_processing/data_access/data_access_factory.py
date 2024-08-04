@@ -30,7 +30,7 @@ class DataAccessFactory(DataAccessFactoryBase):
     This class has to be serializable, so that we can pass it to the actors
     """
 
-    def __init__(self, cli_arg_prefix: str = "data_", enable_data_navigation: bool = True):
+    def __init__(self, logger, cli_arg_prefix: str = "data_", enable_data_navigation: bool = True):
         """
         Create the factory to parse a set of args that will then define the type of DataAccess object
         to be created by the create_data_access() method.
@@ -47,6 +47,7 @@ class DataAccessFactory(DataAccessFactoryBase):
         self.s3_config = None
         self.local_config = None
         self.enable_data_navigation = enable_data_navigation
+        self.logger = logger
 
     def add_input_params(self, parser: argparse.ArgumentParser) -> None:
         """
@@ -240,7 +241,7 @@ class DataAccessFactory(DataAccessFactoryBase):
             )
         return True
 
-    def create_data_access(self) -> DataAccess:
+    def create_data_access(self, logger) -> DataAccess:
         """
         Create data access based on the parameters
         :return: corresponding data access class
@@ -249,6 +250,7 @@ class DataAccessFactory(DataAccessFactoryBase):
             # If S3 config or S3 credential are specified, its S3
             return DataAccessS3(
                 s3_credentials=self.s3_cred,
+                logger=logger,
                 s3_config=self.s3_config,
                 d_sets=self.dsets,
                 checkpoint=self.checkpointing,
@@ -262,6 +264,7 @@ class DataAccessFactory(DataAccessFactoryBase):
             return DataAccessLocal(
                 local_config=self.local_config,
                 d_sets=self.dsets,
+                logger=logger,
                 checkpoint=self.checkpointing,
                 m_files=self.max_files,
                 n_samples=self.n_samples,

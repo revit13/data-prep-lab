@@ -49,4 +49,5 @@ if __name__ == "__main__":
     # launcher = NOOPRayLauncher()
     launcher = RayTransformLauncher(NOOPRayTransformConfiguration())
     logger.info("Launching noop transform")
-    launcher.launch()
+    time.sleep(10)
+    #launcher.launch()
