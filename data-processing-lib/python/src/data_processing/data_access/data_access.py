@@ -17,7 +17,6 @@ import pyarrow as pa
 from data_processing.utils import KB, MB, get_logger
 
 
-logger = get_logger(__name__)
 
 
 class DataAccess:
@@ -40,7 +39,7 @@ class DataAccess:
         pass
 
     @staticmethod
-    def get_random_file_set(n_samples: int, files: list[str]) -> list[str]:
+    def get_random_file_set(n_samples: int, files: list[str], logger) -> list[str]:
         """
         Get random set of files
         :param n_samples: set size
@@ -62,7 +61,7 @@ class DataAccess:
         logger.info(f"Using files {result} to sample data")
         return result
 
-    def get_files_to_process(self) -> tuple[list[str], dict[str, float], int]:
+    def get_files_to_process(self, logger) -> tuple[list[str], dict[str, float], int]:
         """
         Get files to process
         :return: list of files and a dictionary of the files profile:

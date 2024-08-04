@@ -25,8 +25,8 @@ class DataAccessS3(DataAccess):
 
     def __init__(
         self,
-        logger,
         s3_credentials: dict[str, str],
+        logger=None,
         s3_config: dict[str, str] = None,
         d_sets: list[str] = None,
         checkpoint: bool = False,
@@ -46,7 +46,10 @@ class DataAccessS3(DataAccess):
         :param files_to_use: files extensions of files to include
         :param files_to_checkpoint: files extensions of files to use for checkpointing
         """
-        self.logger = logger
+        if logger is None:
+            logger = get_logger(__name__)
+        else:
+            self.logger = logger
         if (
             s3_credentials is None
             or s3_credentials.get("access_key", None) is None

@@ -13,6 +13,7 @@
 import argparse
 import ast
 from typing import Union
+from data_processing.utils import get_logger
 
 from data_processing.data_access import (
     DataAccess,
@@ -30,7 +31,7 @@ class DataAccessFactory(DataAccessFactoryBase):
     This class has to be serializable, so that we can pass it to the actors
     """
 
-    def __init__(self, logger, cli_arg_prefix: str = "data_", enable_data_navigation: bool = True):
+    def __init__(self, logger = None, cli_arg_prefix: str = "data_", enable_data_navigation: bool = True):
         """
         Create the factory to parse a set of args that will then define the type of DataAccess object
         to be created by the create_data_access() method.
@@ -47,7 +48,10 @@ class DataAccessFactory(DataAccessFactoryBase):
         self.s3_config = None
         self.local_config = None
         self.enable_data_navigation = enable_data_navigation
-        self.logger = logger
+        if logger is None:
+            logger = get_logger(__name__)
+        else:
+            self.logger = logger
 
     def add_input_params(self, parser: argparse.ArgumentParser) -> None:
         """

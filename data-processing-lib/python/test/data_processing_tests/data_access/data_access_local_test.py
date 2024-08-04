@@ -22,7 +22,7 @@ from data_processing.data_access import DataAccessLocal
 from data_processing.utils import GB, MB, get_logger
 
 
-logger = get_logger(__name__)
+logger = get_logger("test")
 
 
 class TestInit:
@@ -30,7 +30,7 @@ class TestInit:
         "input_folder": os.path.join(os.sep, "tmp", "input_guf"),
         "output_folder": os.path.join(os.sep, "tmp", "output_guf"),
     }
-    dal = DataAccessLocal(path_dict, d_sets=["dset1", "dset2"], checkpoint=True, m_files=-1)
+    dal = DataAccessLocal(logger, path_dict,  d_sets=["dset1", "dset2"], checkpoint=True, m_files=-1)
     size_stat_dict_empty = {"max_file_size": 0.0, "min_file_size": float(GB), "total_file_size": 0.0}
     size_stat_dict = {"max_file_size": 0.0, "min_file_size": 0.0, "total_file_size": 0.0}
     size_stat_dict_1 = {"max_file_size": 1.0, "min_file_size": 0.0, "total_file_size": 1.0}

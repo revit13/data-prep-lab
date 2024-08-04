@@ -19,7 +19,7 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 from data_processing.data_access import DataAccess
-
+from data_processing.utils import GB, MB, TransformUtils, get_logger
 
 class DataAccessLocal(DataAccess):
     """
@@ -28,7 +28,7 @@ class DataAccessLocal(DataAccess):
 
     def __init__(
         self,
-        logger,
+        logger = None,
         local_config: dict[str, str] = None,
         d_sets: list[str] = None,
         checkpoint: bool = False,
@@ -47,7 +47,6 @@ class DataAccessLocal(DataAccess):
         :param files_to_use: files extensions of files to include
         :param files_to_checkpoint: files extensions of files to use for checkpointing
         """
-        self.logger = logger
         if local_config is None:
             self.input_folder = None
             self.output_folder = None
@@ -60,6 +59,10 @@ class DataAccessLocal(DataAccess):
         self.n_samples = n_samples
         self.files_to_use = files_to_use
         self.files_to_checkpoint = files_to_checkpoint
+        if logger is None:
+            logger = get_logger(__name__)
+        else:
+            self.logger = logger
 
         logger.debug(f"Local input folder: {self.input_folder}")
         logger.debug(f"Local output folder: {self.output_folder}")
