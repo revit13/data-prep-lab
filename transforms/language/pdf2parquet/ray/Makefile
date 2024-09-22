@@ -9,6 +9,15 @@ include $(REPOROOT)/transforms/.make.transforms
 
 TRANSFORM_NAME=pdf2parquet
 
+LINUX_WITH_CPU_TORCH?=true
+OS := $(shell uname -s)
+ifeq ($(OS),Linux)
+	ifeq ($(LINUX_WITH_CPU_TORCH),true)
+	PIP_INSTALL_EXTRA_ARGS=--extra-index-url=https://download.pytorch.org/whl/cpu
+	DOCKER_BUILD_EXTRA_ARGS=--build-arg PIP_INSTALL_EXTRA_ARGS=${PIP_INSTALL_EXTRA_ARGS}
+	endif
+endif
+
 BASE_IMAGE=${RAY_BASE_IMAGE}
 venv::	.transforms.ray-venv
 
@@ -36,7 +45,7 @@ setup:: .transforms.setup
 set-versions: 
 	$(MAKE) TRANSFORM_PYTHON_VERSION=${PDF2PARQUET_PYTHON_VERSION} TOML_VERSION=$(PDF2PARQUET_RAY_VERSION) .transforms.set-versions 
         
-build-dist:: set-versions .defaults.build-dist 
+build-dist:: .defaults.build-dist 
 
 publish-dist:: .defaults.publish-dist
 
