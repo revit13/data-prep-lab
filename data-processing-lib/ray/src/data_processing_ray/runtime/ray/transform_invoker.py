@@ -58,7 +58,7 @@ def execute_ray_transform(
     if p_subdirectory is not None and not installer.validate(name=r_l_name):
         # install corresponding python transform library, if required
         if not installer.install(project=project, subdirectory=p_subdirectory, name=p_l_name):
-            logger.warning(f"failed to install transform {name}")
+            logger.warning(f"failed to install transform {name}1")
             return False
         p_installed = True
 

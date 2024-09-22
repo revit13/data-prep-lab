@@ -16,7 +16,9 @@ transform-tests:
 	$(MAKE) TRANSFORM_SUBDIR=universal .transform-tests .transform-kfp-tests
 	$(MAKE) TRANSFORM_SUBDIR=universal .transform-kfp-tests
 	$(MAKE) TRANSFORM_SUBDIR=language .transform-tests 
+	$(MAKE) TRANSFORM_SUBDIR=language .transform-kfp-tests
 	$(MAKE) TRANSFORM_SUBDIR=code .transform-tests 
+	$(MAKE) TRANSFORM_SUBDIR=code .transform-kfp-tests
 
 # Expects
 #   TRANSFORM_SUBDIR  transforms subdirectory (such as universal)
@@ -29,14 +31,9 @@ transform-tests:
 	done
 
 .transform-kfp-tests:
-	echo ${KFP_BLACK_LIST}
-	for i in $$(find ../../transforms/$(TRANSFORM_SUBDIR) -mindepth 1 -maxdepth 1 -type d); do	\
+	@for i in $$(find ../../transforms/$(TRANSFORM_SUBDIR) -mindepth 1 -maxdepth 1 -type d); do	\
 		dir=$$(basename $$i);				\
-		echo "$$dir";	\
-		echo ${KFP_BLACK_LIST};		\
 		z=$$(echo ${KFP_BLACK_LIST} | grep -v $$dir);     \
-		echo "../../transforms/$(TRANSFORM_SUBDIR)/$$dir/kfp_ray";	\
-		echo "$$z";					\
 		if [ ! -d ../../transforms/$(TRANSFORM_SUBDIR)/$$dir/kfp_ray ] || [ -z "$$z" ]; then		\
 			continue;			\
 		fi;					\
