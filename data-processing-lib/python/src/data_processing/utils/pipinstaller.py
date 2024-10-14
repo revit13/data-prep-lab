@@ -18,8 +18,7 @@ warnings.filterwarnings("ignore")
 import subprocess
 import sys
 
-import pkg_resources
-
+import importlib.metadata
 
 class PipInstaller:
     """
@@ -54,9 +53,9 @@ class PipInstaller:
         :return: True if the library is present, False otherwise
         """
         try:
-            pkg_resources.get_distribution(name)
+            importlib.metadata.version(name)
             return True
-        except pkg_resources.DistributionNotFound:
+        except importlib.metadata.PackageNotFoundError:
             return False
 
     @staticmethod
