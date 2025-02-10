@@ -16,6 +16,8 @@ import kfp.components as comp
 import kfp.dsl as dsl
 from workflow_support.compile_utils import ONE_WEEK_SEC
 
+# The secret name containing the s3 credentials.
+S3_SECRET = "s3-secret"
 
 # empty comment to triigger pre-commit
 # Components
@@ -69,7 +71,7 @@ def sample_code_ray_orchestrator(
     p2_pipeline_output_parent_path: str = "test/super/output/",
     p2_pipeline_parent_path_suffix: str = "",
     p2_pipeline_additional_params: str = '{"wait_interval": 2, "wait_cluster_ready_tmout": 400, "wait_cluster_up_tmout": 300, "wait_job_ready_tmout": 400, "wait_print_tmout": 30, "http_retries": 5, "delete_cluster_delay_minutes": 0}',
-    p2_pipeline_data_s3_access_secret: str = "s3-secret",
+    p2_pipeline_data_s3_access_secret: str = S3_SECRET,
     p2_pipeline_runtime_code_location: dict = {'github': 'github', 'commit_hash': '12345', 'path': 'path'},
     p2_pipeline_runtime_actor_options: dict = {'num_cpus': 0.7},
     p2_pipeline_data_max_files: int = -1,
@@ -82,7 +84,7 @@ def sample_code_ray_orchestrator(
     p3_code2parquet_detect_programming_lang: bool = True,
     p3_code2parquet_domain: str = "code",
     p3_code2parquet_snapshot: str = "github",
-    p3_code2parquet_s3_access_secret: str = "s3-secret",
+    p3_code2parquet_s3_access_secret: str = S3_SECRET,
     # overriding parameters
     p3_overriding_params: str = '{"ray_worker_options": {"image": "'
     + code_to_parquet_image
@@ -153,7 +155,7 @@ def sample_code_ray_orchestrator(
     p7_skip: bool = False,
     p7_proglang_select_allowed_langs_file: str = "test/proglang_select/languages/allowed-code-languages.txt",
     p7_proglang_select_language_column: str = "programming_language",
-    p7_proglang_select_s3_access_secret: str = "s3-secret",
+    p7_proglang_select_s3_access_secret: str = S3_SECRET,
     # overriding parameters
     p7_overriding_params: str = '{"ray_worker_options": {"image": "'
     + proglang_select_image

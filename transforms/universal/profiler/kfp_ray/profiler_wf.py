@@ -25,6 +25,9 @@ from workflow_support.compile_utils import (
 
 task_image = "quay.io/dataprep1/data-prep-kit/profiler-ray:latest"
 
+# The secret name containing the s3 credentials.
+S3_SECRET = "s3-secret"
+
 # the name of the job script
 EXEC_SCRIPT_NAME: str = "-m dpk_profiler.ray.runtime"
 
@@ -85,7 +88,7 @@ def profiler(
     server_url: str = "http://kuberay-apiserver-service.kuberay.svc.cluster.local:8888",
     # data access. checkpointing is not supported by dedup
     data_s3_config: str = "{'input_folder': 'test/profiler/input/', 'output_folder': 'test/profiler/output'}",
-    data_s3_access_secret: str = "s3-secret",
+    data_s3_access_secret: str = S3_SECRET,
     data_max_files: int = -1,
     data_num_samples: int = -1,
     # orchestrator
@@ -174,7 +177,7 @@ def profiler(
             # FIXME: Due to kubeflow/pipelines#10914, secret names cannot be provided as pipeline arguments.
             # As a workaround, the secret name is hard coded.
             env2key = ComponentUtils.set_secret_key_to_env()
-            kubernetes.use_secret_as_env(task=compute_exec_params, secret_name="s3-secret", secret_key_to_env=env2key)
+            kubernetes.use_secret_as_env(task=compute_exec_params, secret_name=S3_SECRET, secret_key_to_env=env2key)
         else:
             ComponentUtils.set_s3_env_vars_to_component(compute_exec_params, data_s3_access_secret)
 
@@ -205,7 +208,7 @@ def profiler(
             # FIXME: Due to kubeflow/pipelines#10914, secret names cannot be provided as pipeline arguments.
             # As a workaround, the secret name is hard coded.
             env2key = ComponentUtils.set_secret_key_to_env()
-            kubernetes.use_secret_as_env(task=execute_job, secret_name="s3-secret", secret_key_to_env=env2key)
+            kubernetes.use_secret_as_env(task=execute_job, secret_name=S3_SECRET, secret_key_to_env=env2key)
         else:
             ComponentUtils.set_s3_env_vars_to_component(execute_job, data_s3_access_secret)
         execute_job.after(ray_cluster)

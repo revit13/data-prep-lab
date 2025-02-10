@@ -37,7 +37,7 @@ def super_pipeline(
     p2_pipeline_input_parent_path: str = "test/doc_id/input/",
     p2_pipeline_output_parent_path: str = "test/super/output/",
     p2_pipeline_parent_path_suffix: str = "",
-    p2_pipeline_data_s3_access_secret: str = "s3-secret",
+    p2_pipeline_data_s3_access_secret: str = S3_SECRET,
     # doc_id step parameters
     p3_name: str = "doc_id",
     p3_skip: bool = False,

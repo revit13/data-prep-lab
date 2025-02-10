@@ -57,6 +57,9 @@ Our pipeline includes 4 steps - compute execution parameters, create Ray cluster
 Ray cluster. For each step we have to define a component that will execute them:
 
 ```python
+    # The secret name containing the s3 credentials.
+    S3_SECRET = "s3-secret"
+
     # components
     base_kfp_image = "quay.io/dataprep1/data-prep-kit/kfp-data-processing:latest"
     component_spec_path = os.getenv("KFP_COMPONENT_SPEC_PATH", DEFAULT_KFP_COMPONENT_SPEC_PATH)
@@ -100,7 +103,7 @@ The input parameters section defines all the parameters required for the pipelin
     server_url: str = "http://kuberay-apiserver-service.kuberay.svc.cluster.local:8888",
     # data access
     data_s3_config: str = "{'input_folder': 'test/noop/input/', 'output_folder': 'test/noop/output/'}",
-    data_s3_access_secret: str = "s3-secret",
+    data_s3_access_secret: str = S3_SECRET,
     data_max_files: int = -1,
     data_num_samples: int = -1,
     data_checkpointing: bool = False,
@@ -226,7 +229,7 @@ component execution and parameters submitted to every component.
             # FIXME: Due to kubeflow/pipelines#10914, secret names cannot be provided as pipeline arguments.
             # As a workaround, the secret name is hard coded.
             env2key = ComponentUtils.set_secret_key_to_env()
-            kubernetes.use_secret_as_env(task=execute_job, secret_name="s3-secret", secret_key_to_env=env2key)
+            kubernetes.use_secret_as_env(task=execute_job, secret_name=S3_SECRET, secret_key_to_env=env2key)
         else:
             ComponentUtils.set_s3_env_vars_to_component(execute_job, data_s3_access_secret)
       execute_job.after(ray_cluster)
