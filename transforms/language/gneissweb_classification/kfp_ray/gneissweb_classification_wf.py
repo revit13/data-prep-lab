@@ -22,10 +22,10 @@ from workflow_support.compile_utils import (
 )
 
 
-task_image = "quay.io/dataprep1/data-prep-kit/rep_removal-ray:latest"
+task_image = "quay.io/dataprep1/data-prep-kit/gneissweb_classification-ray:latest"
 
 # the name of the job script
-EXEC_SCRIPT_NAME: str = "-m dpk_rep_removal.ray.runtime"
+EXEC_SCRIPT_NAME: str = "-m dpk_gneissweb_classification.ray.transform"
 
 # components
 base_kfp_image = "quay.io/dataprep1/data-prep-kit/kfp-data-processing:latest"
@@ -45,13 +45,12 @@ def compute_exec_params_func(
     runtime_pipeline_id: str,
     runtime_job_id: str,
     runtime_code_location: dict,
-    rep_removal_contents_column_name: str,
-    rep_removal_dedup_level_name: str,
-    rep_removal_length_thresh: int,
-    rep_removal_frequency_threshold: int,
-    rep_removal_retain_first_copy: bool,
-    rep_removal_tokenize: bool,
-    rep_removal_num_threads: int,
+    gcls_model_credential: str,
+    gcls_model_file_name: str,
+    gcls_model_url: str,
+    gcls_content_column_name: str,
+    gcls_output_label_column_name: str,
+    gcls_output_score_column_name: str,
 ) -> dict:
     from runtime_utils import KFPUtils
 
@@ -65,13 +64,12 @@ def compute_exec_params_func(
         "runtime_pipeline_id": runtime_pipeline_id,
         "runtime_job_id": runtime_job_id,
         "runtime_code_location": str(runtime_code_location),
-        "rep_removal_contents_column_name": rep_removal_contents_column_name,
-        "rep_removal_dedup_level_name": rep_removal_dedup_level_name,
-        "rep_removal_length_thresh": rep_removal_length_thresh,
-        "rep_removal_frequency_threshold": rep_removal_frequency_threshold,
-        "rep_removal_retain_first_copy": rep_removal_retain_first_copy,
-        "rep_removal_tokenize": rep_removal_tokenize,
-        "rep_removal_num_threads": rep_removal_num_threads,
+        "gcls_model_credential": gcls_model_credential,
+        "gcls_model_file_name": gcls_model_file_name,
+        "gcls_model_url": gcls_model_url,
+        "gcls_content_column_name": gcls_content_column_name,
+        "gcls_output_label_column_name": gcls_output_label_column_name,
+        "gcls_output_score_column_name": gcls_output_score_column_name,
     }
 
 
@@ -94,16 +92,16 @@ execute_ray_jobs_op = comp.load_component_from_file(component_spec_path + "execu
 cleanup_ray_op = comp.load_component_from_file(component_spec_path + "deleteRayClusterComponent.yaml")
 
 # Task name is part of the pipeline name, the ray cluster name and the job name in DMF.
-TASK_NAME: str = "rep_removal"
+TASK_NAME: str = "gneissweb_classification"
 
 
 @dsl.pipeline(
     name=TASK_NAME + "-ray-pipeline",
-    description="Pipeline for text repetition removal task",
+    description="Pipeline for Gneissweb Classification task",
 )
-def rep_removal(
+def gneissweb_classification(
     # Ray cluster
-    ray_name: str = "rep_removal-kfp-ray",  # name of Ray cluster
+    ray_name: str = "gneissweb_classification-kfp-ray",  # name of Ray cluster
     ray_run_id_KFPv2: str = "",  # Ray cluster unique ID used only in KFP v2
     # Add image_pull_secret and image_pull_policy to ray workers if needed
     ray_head_options: dict = {"cpu": 1, "memory": 4, "image": task_image},
@@ -117,7 +115,7 @@ def rep_removal(
     },
     server_url: str = "http://kuberay-apiserver-service.kuberay.svc.cluster.local:8888",
     # data access
-    data_s3_config: str = "{'input_folder': 'test/rep_removal/input/', 'output_folder': 'test/rep_removal/output/'}",
+    data_s3_config: str = "{'input_folder': 'test/gneissweb_classification/input/', 'output_folder': 'test/gneissweb_classification/output/'}",
     data_s3_access_secret: str = "s3-secret",
     data_max_files: int = -1,
     data_num_samples: int = -1,
@@ -126,19 +124,18 @@ def rep_removal(
     runtime_actor_options: dict = {"num_cpus": 0.8},
     runtime_pipeline_id: str = "pipeline_id",
     runtime_code_location: dict = {"github": "github", "commit_hash": "12345", "path": "path"},
-    # rep_removal parameters
-    rep_removal_contents_column_name: str = "contents",
-    rep_removal_dedup_level_name: str = "parquet",
-    rep_removal_length_thresh: int = 50,
-    rep_removal_frequency_threshold: int = 1,
-    rep_removal_retain_first_copy: bool = "True",
-    rep_removal_tokenize: bool = "True",
-    rep_removal_num_threads: int = 4,
+    # gneissweb_classification parameters
+    gcls_model_credential: str = "",
+    gcls_model_url: str = "",
+    gcls_model_file_name: str = "",
+    gcls_content_column_name: str = "contents",
+    gcls_output_label_column_name: str = "lang",
+    gcls_output_score_column_name: str = "score",
     # additional parameters
     additional_params: str = '{"wait_interval": 2, "wait_cluster_ready_tmout": 400, "wait_cluster_up_tmout": 300, "wait_job_ready_tmout": 400, "wait_print_tmout": 30, "http_retries": 5, "delete_cluster_delay_minutes": 0}',
 ):
     """
-    Pipeline to execute rep_removal transform
+    Pipeline to execute gneissweb_classification transform
     :param ray_name: name of the Ray cluster
     :param ray_run_id_KFPv2: a unique string id used for the Ray cluster, applicable only in KFP v2.
     :param ray_head_options: head node options, containing the following:
@@ -171,13 +168,12 @@ def rep_removal(
     :param runtime_actor_options - actor options
     :param runtime_pipeline_id - pipeline id
     :param runtime_code_location - code location
-    :param rep_removal_contents_column_name - Name of the column holding the document text
-    :param rep_removal_dedup_level_name - Name of the type of file to process.
-    :param rep_removal_length_thresh - Length threshold for processing
-    :param rep_removal_frequency_threshold - Frequency threshold for processing.
-    :param rep_removal_retain_first_copy - Boolean value for whether to retain first copy
-    :param rep_removal_tokenize - Boolean value for whether to tokenize
-    :param rep_removal_num_threads - Value for number of threads to use for processing
+    :param gcls_model_credential - Credential to access huggingface model
+    :param gcls_model_file_name - filename of model
+    :param gcls_model_url - url that model locates. For fasttext, this will be repo name of the model
+    :param gcls_content_column_name - Column name to get content
+    :param gcls_output_label_column_name - Column name to store label
+    :param gcls_output_score_column_name - Column name to store the score
     :return: None
     """
     # In KFPv2 dsl.RUN_ID_PLACEHOLDER is deprecated and cannot be used since SDK 2.5.0. On another hand we cannot create
@@ -210,13 +206,12 @@ def rep_removal(
             runtime_pipeline_id=runtime_pipeline_id,
             runtime_job_id=run_id,
             runtime_code_location=runtime_code_location,
-            rep_removal_contents_column_name=rep_removal_contents_column_name,
-            rep_removal_dedup_level_name=rep_removal_dedup_level_name,
-            rep_removal_length_thresh=rep_removal_length_thresh,
-            rep_removal_frequency_threshold=rep_removal_frequency_threshold,
-            rep_removal_retain_first_copy=rep_removal_retain_first_copy,
-            rep_removal_tokenize=rep_removal_tokenize,
-            rep_removal_num_threads=rep_removal_num_threads,
+            gcls_model_credential=gcls_model_credential,
+            gcls_model_file_name=gcls_model_file_name,
+            gcls_model_url=gcls_model_url,
+            gcls_content_column_name=gcls_content_column_name,
+            gcls_output_label_column_name=gcls_output_label_column_name,
+            gcls_output_score_column_name=gcls_output_score_column_name,
         )
 
         ComponentUtils.add_settings_to_component(compute_exec_params, ONE_HOUR_SEC * 2)
@@ -248,4 +243,4 @@ def rep_removal(
 
 if __name__ == "__main__":
     # Compiling the pipeline
-    compiler.Compiler().compile(rep_removal, __file__.replace(".py", ".yaml"))
+    compiler.Compiler().compile(gneissweb_classification, __file__.replace(".py", ".yaml"))
