@@ -7,6 +7,10 @@ RUN chown ray:root /home/ray && chmod 775 /home/ray
 
 RUN pip install --upgrade --no-cache-dir pip
 RUN apt update && apt install curl -y && apt install gcc -y
+# install rust and set path
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN chown ray:root /home/ray/.cargo && chmod 775 /home/ray/.cargo
+
 
 USER ray
 
@@ -16,8 +20,7 @@ ARG DPK_WHEEL_FILE_NAME
 ARG TRANSFORM_NAME
 
 ENV HOME="/home/ray"
-# install rust and set path
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
 ENV PATH="$PATH:$HOME/.cargo/bin"
 
 # Copy and install data processing libraries 
