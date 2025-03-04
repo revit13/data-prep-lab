@@ -10,6 +10,7 @@
 # limitations under the License.
 ################################################################################
 
+import os
 from argparse import ArgumentParser, Namespace
 from typing import Any
 
@@ -38,6 +39,7 @@ output_score_column_name_cli_param = f"{cli_prefix}{output_score_column_name_key
 default_content_column_name = "contents"
 default_output_lang_column_name = "lang"
 default_output_score_column_name = "score"
+default_model_credential = os.environ.get('HF_READ_ACCESS_TOKEN', "")
 
 
 class LangIdentificationTransform(AbstractTableTransform):
@@ -113,7 +115,8 @@ class LangIdentificationTransformConfiguration(TransformConfiguration):
         """
         parser.add_argument(
             f"--{model_credential_cli_param}",
-            required=True,
+            required=False,
+            default=default_model_credential,
             help="Credential to access model for language detection placed in url",
         )
         parser.add_argument(f"--{model_kind_cli_param}", required=True, help="Kind of model for language detection")
