@@ -1,0 +1,2 @@
+{"id":"f38788ac-15ed-4a84-9f64-b1ed20ba3ec9","ts":"2026-07-13T19:24:55.793Z","path":"/home/eres/data-prep-lab/scripts/k8s-setup/README.md","version":"1.0.0","taskID":"452f0b29-248a-4406-9f8a-66079b2f7da8"}
+{"id":"7912dd79-64ac-4f82-9609-8c42b14c4ebe","ts":"2026-07-13T19:25:49.690Z","path":"/home/eres/data-prep-lab/scripts/k8s-setup/populate_minio.sh","version":"1.0.0","taskID":"452f0b29-248a-4406-9f8a-66079b2f7da8"}
